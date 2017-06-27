@@ -12,7 +12,7 @@ const github = new GitHubApi({
 });
 
 function getTestplanItems() {
-    return github.issues.getForRepo({owner: 'microsoft', repo: 'vscode', labels: 'testplan-item', state: 'open'}).then(result => {
+    return github.issues.getForRepo({ owner: 'microsoft', repo: 'vscode', labels: 'testplan-item', state: 'open', per_page: 1000 }).then(result => {
         return result.data;
     });
 }
