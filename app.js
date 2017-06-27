@@ -43,6 +43,7 @@ function getNumTesters(item) {
 function getItemData(item) {
     return {
         number: item.number,
+        author: item.user.login,
         title: item.title,
         complexity: getItemComplexity(item),
         numTesters: getNumTesters(item)
@@ -52,10 +53,21 @@ function getItemData(item) {
 getTestplanItems().then(items => {
     items = items.map(getItemData);
 
-    console.log('number\tnumTesters\tcomplexity');
-    items.forEach(item => {
-        console.log(`${item.number}\t${item.numTesters}\t${item.complexity}`);
-    });
+    logItems(items, ['number', 'author', 'numTesters', 'complexity']);
+    console.log('\n\n===');
+    logItems(items, ['title']);
 }, err => {
     console.error(err);
 });
+
+function logItems(items, props) {
+    // Log header
+    console.log(props.join('\t'));
+
+    // Log values
+    items.forEach(item => {
+        console.log(props
+            .map(prop => item[prop])
+            .join('\t'));
+    });
+}
