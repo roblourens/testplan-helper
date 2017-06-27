@@ -1,0 +1,21 @@
+{
+  "name": "testplan-helper",
+  "version": "0.0.1",
+  "description": "Helper for generating vscode testplan",
+  "main": "app.js",
+  "dependencies": {
+    "@slack/client": "^3.10.0",
+    "github": "^9.2.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roblourens/testplan-helper.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/roblourens/testplan-helper/issues"
+  },
+  "homepage": "https://github.com/roblourens/testplan-helper#readme"
+}
