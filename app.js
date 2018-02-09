@@ -18,7 +18,7 @@ function getTestplanItems() {
 }
 
 function getItemComplexity(item) {
-    const match = item.body.match(/complexity:?\s+(\d+)/i);
+    const match = item.body.match(/\**complexity\**:?[\*,\s]*(\d+)/i);
     return match ?
         parseInt(match[1]) :
         -1;
