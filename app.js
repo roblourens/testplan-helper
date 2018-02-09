@@ -61,11 +61,17 @@ function getItemData(item) {
 getTestplanItems().then(items => {
     items = items.map(getItemData);
 
+    missingComplexity = items.filter(x => x['complexity'] < 1).map(x => x.number);
+    if (missingComplexity.length) {
+        console.log(`These issues are missing complexities: ${missingComplexity}`);
+        return;
+    }
+
     logItems(items, ['number', 'author', 'numTesters', 'complexity']);
     
     console.log('\n\n===');
     if (Object.keys(issuesWithPreferredTesters).length) {
-        console.log(`Below issues have preferred testers:`)
+        console.log(`Below issues have preferred testers:\n`)
         for (var issue in issuesWithPreferredTesters) {
             console.log(`${issue}: ${issuesWithPreferredTesters[issue].substr(1)}`);
         }
