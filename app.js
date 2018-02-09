@@ -18,13 +18,14 @@ function getTestplanItems() {
 }
 
 function getItemComplexity(item) {
-    const match = item.body.match(/complexity:?\s+(\d+)/i);
+    const match = item.body.match(/\**complexity\**:?[\*,\s]*(\d+)/i);
     return match ?
         parseInt(match[1]) :
         -1;
 }
 
 const isListRow = row => !!row.match(/^\s*\- \[[x ]?\] /);
+const issuesWithPreferredTesters = {};
 function getNumTesters(item) {
     let lines = item.body.split(/\n/);
 
@@ -35,6 +36,13 @@ function getNumTesters(item) {
     const firstNonListRowIdx = lines.findIndex(row => !isListRow(row));
     if (firstNonListRowIdx >= 0) lines = lines.slice(0, firstNonListRowIdx);
 
+    for (let i = 0; i < lines.length; i++) {
+        const match = lines[i].match(/^\s*\- \[[x ]?\]\s*\S*(@\S+)/);
+        if (match) {
+            issuesWithPreferredTesters[item.number] = (issuesWithPreferredTesters[item.number] || '') + ',' + match[1];
+        }
+    }
+    
     const numListRows = lines.length;
     return numListRows <= 5 ?
         numListRows : -1;
@@ -53,9 +61,25 @@ function getItemData(item) {
 getTestplanItems().then(items => {
     items = items.map(getItemData);
 
+    missingComplexity = items.filter(x => x['complexity'] < 1).map(x => x.number);
+    if (missingComplexity.length) {
+        console.log(`These issues are missing complexities: ${missingComplexity}`);
+        return;
+    }
+
     logItems(items, ['number', 'author', 'numTesters', 'complexity']);
+    
+    console.log('\n\n===');
+    if (Object.keys(issuesWithPreferredTesters).length) {
+        console.log(`Below issues have preferred testers:\n`)
+        for (var issue in issuesWithPreferredTesters) {
+            console.log(`${issue}: ${issuesWithPreferredTesters[issue].substr(1)}`);
+        }
+    }
+
     console.log('\n\n===');
     logItems(items, ['title']);
+    
 }, err => {
     console.error(err);
 });
